@@ -3,6 +3,7 @@ import Groq from 'groq-sdk';
 import './App.css';
 import pedigreeData from './pedigree_data.json';
 import tokyoMegaData from './tokyo_turf_1400_mega.json'; 
+import hanshin3000MegaData from './hanshin_turf_3000_mega.json';
 
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY,
