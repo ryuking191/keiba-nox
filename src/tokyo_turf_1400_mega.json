@@ -1,0 +1,367 @@
+{
+  "course": "東京芝1400m",
+  "frame_stats": [
+    {
+      "name": "1枠",
+      "win_rate": "5.8",
+      "win_roi": "63",
+      "place_roi": "69"
+    },
+    {
+      "name": "2枠",
+      "win_rate": "4.3",
+      "win_roi": "64",
+      "place_roi": "74"
+    },
+    {
+      "name": "3枠",
+      "win_rate": "6.6",
+      "win_roi": "80",
+      "place_roi": "73"
+    },
+    {
+      "name": "4枠",
+      "win_rate": "5.3",
+      "win_roi": "60",
+      "place_roi": "79"
+    },
+    {
+      "name": "5枠",
+      "win_rate": "8.4",
+      "win_roi": "87",
+      "place_roi": "84"
+    },
+    {
+      "name": "6枠",
+      "win_rate": "9.0",
+      "win_roi": "102",
+      "place_roi": "85"
+    },
+    {
+      "name": "7枠",
+      "win_rate": "6.6",
+      "win_roi": "84",
+      "place_roi": "83"
+    },
+    {
+      "name": "8枠",
+      "win_rate": "7.8",
+      "win_roi": "92",
+      "place_roi": "95"
+    }
+  ],
+  "running_style_stats": [
+    {
+      "name": "逃げ",
+      "win_rate": "8.4",
+      "win_roi": "78",
+      "place_roi": "71"
+    },
+    {
+      "name": "先行",
+      "win_rate": "8.1",
+      "win_roi": "74",
+      "place_roi": "83"
+    },
+    {
+      "name": "差し",
+      "win_rate": "14.0",
+      "win_roi": "92",
+      "place_roi": "85"
+    },
+    {
+      "name": "追込",
+      "win_rate": "14.3",
+      "win_roi": "77",
+      "place_roi": "87"
+    }
+  ],
+  "popularity_stats": [
+    {
+      "name": "1人気",
+      "win_rate": "34.2",
+      "win_roi": "82",
+      "place_roi": "87"
+    },
+    {
+      "name": "2人気",
+      "win_rate": "18.3",
+      "win_roi": "76",
+      "place_roi": "82"
+    },
+    {
+      "name": "3人気",
+      "win_rate": "11.4",
+      "win_roi": "70",
+      "place_roi": "77"
+    },
+    {
+      "name": "4人気",
+      "win_rate": "9.1",
+      "win_roi": "77",
+      "place_roi": "77"
+    },
+    {
+      "name": "5人気",
+      "win_rate": "4.6",
+      "win_roi": "53",
+      "place_roi": "69"
+    },
+    {
+      "name": "6人気",
+      "win_rate": "5.7",
+      "win_roi": "93",
+      "place_roi": "89"
+    },
+    {
+      "name": "7人気",
+      "win_rate": "5.3",
+      "win_roi": "114",
+      "place_roi": "94"
+    },
+    {
+      "name": "8人気",
+      "win_rate": "2.7",
+      "win_roi": "80",
+      "place_roi": "65"
+    },
+    {
+      "name": "9人気",
+      "win_rate": "2.8",
+      "win_roi": "112",
+      "place_roi": "73"
+    },
+    {
+      "name": "10以下",
+      "win_rate": "1.1",
+      "win_roi": "108",
+      "place_roi": "78"
+    }
+  ],
+  "distance_change_stats": [
+    {
+      "name": "500m以上延長",
+      "win_rate": "0",
+      "win_roi": "0",
+      "place_roi": "0"
+    },
+    {
+      "name": "300m-400m延長",
+      "win_rate": "1.9",
+      "win_roi": "118",
+      "place_roi": "70"
+    },
+    {
+      "name": "100m-200m延長",
+      "win_rate": "4.7",
+      "win_roi": "88",
+      "place_roi": "77"
+    },
+    {
+      "name": "距離変更なし",
+      "win_rate": "7.1",
+      "win_roi": "69",
+      "place_roi": "80"
+    },
+    {
+      "name": "100m-200m短縮",
+      "win_rate": "9.8",
+      "win_roi": "89",
+      "place_roi": "86"
+    },
+    {
+      "name": "300m-400m短縮",
+      "win_rate": "5.2",
+      "win_roi": "135",
+      "place_roi": "93"
+    },
+    {
+      "name": "500m以上短縮",
+      "win_rate": "1.8",
+      "win_roi": "56",
+      "place_roi": "111"
+    }
+  ],
+  "course_change_stats": [
+    {
+      "name": "芝→芝",
+      "win_rate": "7.5",
+      "win_roi": "78",
+      "place_roi": "82"
+    },
+    {
+      "name": "ダ→芝",
+      "win_rate": "3.3",
+      "win_roi": "129",
+      "place_roi": "83"
+    }
+  ],
+  "jockey_stats": [
+    {
+      "name": "Ｃ．ルメール",
+      "win_rate": "23.2",
+      "win_roi": "71",
+      "place_roi": "87"
+    },
+    {
+      "name": "戸崎 圭太",
+      "win_rate": "16.2",
+      "win_roi": "82",
+      "place_roi": "83"
+    },
+    {
+      "name": "横山 武史",
+      "win_rate": "14.9",
+      "win_roi": "82",
+      "place_roi": "83"
+    },
+    {
+      "name": "菅原 明良",
+      "win_rate": "8.5",
+      "win_roi": "91",
+      "place_roi": "79"
+    },
+    {
+      "name": "田辺 裕信",
+      "win_rate": "9.6",
+      "win_roi": "83",
+      "place_roi": "93"
+    },
+    {
+      "name": "三浦 皇成",
+      "win_rate": "6.7",
+      "win_roi": "56",
+      "place_roi": "87"
+    },
+    {
+      "name": "横山 和生",
+      "win_rate": "11.8",
+      "win_roi": "108",
+      "place_roi": "93"
+    },
+    {
+      "name": "Ｍ．デムーロ",
+      "win_rate": "12.9",
+      "win_roi": "89",
+      "place_roi": "99"
+    },
+    {
+      "name": "石川 裕紀人",
+      "win_rate": "7.2",
+      "win_roi": "119",
+      "place_roi": "89"
+    },
+    {
+      "name": "津村 明秀",
+      "win_rate": "5.6",
+      "win_roi": "61",
+      "place_roi": "67"
+    }
+  ],
+  "sire_stats": [
+    {
+      "name": "ロードカナロア",
+      "win_rate": "11.8",
+      "win_roi": "103",
+      "place_roi": "82"
+    },
+    {
+      "name": "エピファネイア",
+      "win_rate": "10.1",
+      "win_roi": "84",
+      "place_roi": "98"
+    },
+    {
+      "name": "イスラボニータ",
+      "win_rate": "14.5",
+      "win_roi": "138",
+      "place_roi": "96"
+    },
+    {
+      "name": "モーリス",
+      "win_rate": "7.3",
+      "win_roi": "69",
+      "place_roi": "76"
+    },
+    {
+      "name": "ビッグアーサー",
+      "win_rate": "11.0",
+      "win_roi": "111",
+      "place_roi": "79"
+    },
+    {
+      "name": "ドレフォン",
+      "win_rate": "10.0",
+      "win_roi": "86",
+      "place_roi": "77"
+    },
+    {
+      "name": "リオンディーズ",
+      "win_rate": "10.4",
+      "win_roi": "80",
+      "place_roi": "73"
+    },
+    {
+      "name": "ハーツクライ",
+      "win_rate": "9.0",
+      "win_roi": "63",
+      "place_roi": "73"
+    },
+    {
+      "name": "ディープインパクト",
+      "win_rate": "9.1",
+      "win_roi": "72",
+      "place_roi": "99"
+    },
+    {
+      "name": "キタサンブラック",
+      "win_rate": "15.4",
+      "win_roi": "104",
+      "place_roi": "83"
+    }
+  ],
+  "lineage_stats": [
+    {
+      "name": "サンデーサイレンス系",
+      "win_rate": "6.3",
+      "win_roi": "74",
+      "place_roi": "85"
+    },
+    {
+      "name": "ノーザンダンサー系",
+      "win_rate": "5.8",
+      "win_roi": "75",
+      "place_roi": "83"
+    },
+    {
+      "name": "ミスタープロスペクター系",
+      "win_rate": "8.4",
+      "win_roi": "92",
+      "place_roi": "80"
+    },
+    {
+      "name": "ロベルト系",
+      "win_rate": "6.3",
+      "win_roi": "64",
+      "place_roi": "77"
+    },
+    {
+      "name": "ナスルーラ系",
+      "win_rate": "5.7",
+      "win_roi": "81",
+      "place_roi": "72"
+    },
+    {
+      "name": "ヘイロー系",
+      "win_rate": "0.0",
+      "win_roi": "0",
+      "place_roi": "61"
+    },
+    {
+      "name": "エクリプス系",
+      "win_rate": "0.0",
+      "win_roi": "0",
+      "place_roi": "80"
+    }
+  ]
+}
