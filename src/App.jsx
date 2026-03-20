@@ -126,6 +126,7 @@ function App() {
 （展開の推測）
       `;
 
+      // 🚨 修正：ここでちゃんと combinedPrompt を定義する！
       const combinedPrompt = `
 【本日の出馬表・オッズデータ】
 ${input}
@@ -176,7 +177,6 @@ ${JSON.stringify(dynamicPastData, null, 2)}
           全自動スクレイピング ＆ 期待値AI
         </p>
 
-        {/* 💰 新規追加：プルダウン式の予算入力欄 */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', background: '#fffafb', borderRadius: '16px', border: '2px solid #ffe4ec', padding: '5px 15px' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', marginRight: '10px', whiteSpace: 'nowrap' }}>💰 1点あたりの金額:</span>
           <select 
