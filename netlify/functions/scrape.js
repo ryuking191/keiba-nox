@@ -18,11 +18,12 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    // 1. アプリ（画面）から送られてきた「netkeibaのURL」を受け取る
+    // 1. アプリ（画面）から送られてきたURLを受け取る
     const body = JSON.parse(event.body);
     const targetUrl = body.url;
 
-    if (!targetUrl || !targetUrl.includes('netkeiba.com')) {
+    // 🚨 修正1： 'netkeiba.com' じゃなくて 'keiba.com' に緩める！（db.keiba.comを通すため）
+    if (!targetUrl || !targetUrl.includes('keiba.com')) {
       return {
         statusCode: 400,
         headers,
@@ -32,7 +33,7 @@ exports.handler = async function(event, context) {
 
     console.log('🕵️‍♂️ サーバー側でスクレイピング開始:', targetUrl);
 
-    // 2. 文字化け対策しながらnetkeibaに潜入！（あの投網スナイパーコードの流用）
+    // 2. 文字化け対策しながらnetkeibaに潜入！
     const response = await axios.get(targetUrl, {
       responseType: 'arraybuffer',
       headers: {
@@ -44,15 +45,16 @@ exports.handler = async function(event, context) {
     const $ = cheerio.load(html);
     const horses = [];
 
-    // 3. 全行をスキャンして、馬体重と性別がある「競走馬のデータ行」を引っこ抜く！
+    // 🚨 修正2： 'kg' 条件を削除！馬のURL（/horse/）があれば問答無用で確保！
     $('tr').each((i, row) => {
-      const rowText = $(row).text().replace(/\s+/g, ' ').trim();
+      const horseLink = $(row).find('a[href*="/horse/"]').first();
       
-      if (rowText.includes('kg') && (rowText.includes('牡') || rowText.includes('牝') || rowText.includes('セ'))) {
-        const horseLink = $(row).find('a[href*="/horse/"]').first();
+      // もし行の中に「馬のリンク」があれば、それは間違いなく競走馬のデータ！
+      if (horseLink.length > 0) { 
         let name = horseLink.text().trim();
         if (!name || name.length < 2) return;
 
+        const rowText = $(row).text().replace(/\s+/g, ' ').trim();
         let umaban = $(row).find('.Umaban, td.Num, td:first-child').text().replace(/[^0-9]/g, '').trim();
         if (!umaban) umaban = String(horses.length + 1);
 
