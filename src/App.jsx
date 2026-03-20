@@ -3,7 +3,7 @@ import Groq from 'groq-sdk';
 import './App.css';
 import pedigreeData from './pedigree_data.json';
 import tokyoMegaData from './tokyo_turf_1400_mega.json'; 
-import hanshin3000MegaData from './hanshin_turf_3000_mega.json';
+import hanshin3000MegaData from './hanshin_turf_3000_mega.json'; // 👈 コメントアウト解除！
 
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY,
@@ -12,11 +12,12 @@ const groq = new Groq({
 
 function App() {
   const [input, setInput] = useState(''); // 出馬表・オッズ用
-  const [urlInput, setUrlInput] = useState(''); // 📡 【追加】netkeiba過去走URL用
+  const [urlInput, setUrlInput] = useState(''); // 📡 netkeiba過去走URL用
+  const [budget, setBudget] = useState('10000'); // 💰 【追加】予算用（初期値1万）
   const [response, setResponse] = useState('');
   const [loadingText, setLoadingText] = useState(''); // 進行状況テキスト
 
-  const [lastInput, setLastInput] = useState({ text: '', url: '' });
+  const [lastInput, setLastInput] = useState({ text: '', url: '', budget: '' });
   const [lastResponse, setLastResponse] = useState('');
 
   const extractCourseInfo = (text) => {
@@ -35,8 +36,8 @@ function App() {
       return;
     }
 
-    // キャッシュ機能（前回と全く同じ入力なら一瞬で返す）
-    if (input === lastInput.text && urlInput === lastInput.url && lastResponse !== '') {
+    // キャッシュ機能
+    if (input === lastInput.text && urlInput === lastInput.url && budget === lastInput.budget && lastResponse !== '') {
       setResponse(lastResponse);
       return; 
     }
@@ -45,10 +46,8 @@ function App() {
     let dynamicPastData = [];
 
     try {
-      // 🕵️‍♂️ ステップ1：裏側のAPI（Netlify Functions）に潜入指令を出す！
       setLoadingText('🕵️‍♂️ netkeibaから生データを全自動強奪中...');
       
-      // 💡 デプロイ先のNetlify専用のURLを叩く
       const scrapeRes = await fetch('/.netlify/functions/scrape', {
         method: 'POST',
         body: JSON.stringify({ url: urlInput }),
@@ -60,16 +59,18 @@ function App() {
         throw new Error(errData.error || 'スクレイピングに失敗しました！URLを確認してね。');
       }
 
-      dynamicPastData = await scrapeRes.json(); // 強奪した最新データ！
+      dynamicPastData = await scrapeRes.json();
 
-      // 🧠 ステップ2：AI予想フェーズ
       setLoadingText('💭 強奪データとAIを同期中...期待値計算スタート！');
 
       const detectedCourse = extractCourseInfo(input);
       let biasDataText = "";
 
+      // 💡 【追加】阪神芝3000mの判定ロジック！
       if (detectedCourse === "東京芝1400m") {
         biasDataText = `【🔥 システム自動提供②：${detectedCourse} 完全バイアスデータ】\n${JSON.stringify(tokyoMegaData, null, 2)}`;
+      } else if (detectedCourse === "阪神芝3000m") {
+        biasDataText = `【🔥 システム自動提供②：${detectedCourse} 完全バイアスデータ】\n${JSON.stringify(hanshin3000MegaData, null, 2)}\n極限のスタミナ戦であることを前提に、このデータから期待値を計算せよ。`;
       } else if (detectedCourse) {
         biasDataText = `【🔥 システム自動提供②：${detectedCourse} のコースバイアス（AI自己補完）】\n専用データ未登録。プロの知識（直線、坂、有利な脚質や枠順）を最大限に引き出し、バイアスを自己補完して分析せよ。`;
       } else {
@@ -86,7 +87,6 @@ function App() {
 ・▲（単穴）：2頭。「連対率の期待値」が次に高い馬、または展開次第で一発逆転がある馬。
 ・△（連下）：基本2〜3頭。連対・3着付けのヒモとしてオッズ的な妙味（期待値）が取れる馬。
 ・「⭐」は使用禁止。
-・形式例（◎の場合）：◎ 【1番】イクイノックス オッズ5.0 × 予想勝率25％ ＝ 勝率期待値125％
 
 ✅ 【超重要】6つの分析次元（データ強化版）
 1.【ポテンシャル】前走敗因、ローテ、脚質・上がり3Fの質、持ちタイム。
@@ -96,17 +96,18 @@ function App() {
 5.【オッズ・市場心理】過剰人気、不当評価、オッズ断層。
 6.【人・陣営】騎手のコース実績、脚質の合致度。
 
-✅ 勝率・連対率計算のルール
-全頭の「勝率」合計100％、「連対率」合計200％に収めること。印馬の勝率合計は50%前後、連対率合計は100%前後に。
-
 ✅ 【超重要】買い方パターンと発動ルール
 条件A: 1番人気の期待値が低く飛ぶ可能性が高い / 条件B: ◎か〇にオッズ10倍以上を指名 / 条件C: △で拾うべき伏兵が3頭以上いてヒモ荒れ濃厚
 上記いずれかに該当なら「2. 荒れ予想（16点）」、該当しなければ「1. 通常予想（10点）」を選択。
 1.【通常予想（10点）】単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-○,◎-▲1,◎-▲2 / 三連複:◎-○-▲1,◎-○-▲2 / 三連単:◎→○→▲1,◎→○→▲2
 2.【荒れ予想（16点）】単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-△1,◎-△2,◎-△3 / 三連複:◎-○-▲1,◎-○-▲2,◎-○-△1,◎-○-△2,◎-○-△3 / 三連単:◎→○→▲1,◎→○→△1,◎→○→△2,◎→○→△3
 
+✅ 資金配分ルール
+・ユーザーから指定された予算（今回は ${budget} 円）を、選択した点数（10点または16点）で、期待値が最大になるように配分してください。
+・必ず各買い目の「購入金額（円）」を明記すること。
+
 ✅ 出力形式
-印、買い方、点数。そして「なぜその評価になったか」「なぜこの点数（10点 or 16点）を選択したか」をロジカルに解説。
+印、買い方、資金配分、点数。そして「なぜその評価になったか」「なぜこの点数を選択したか」をロジカルに解説。
       `;
 
       const combinedPrompt = `
@@ -124,7 +125,7 @@ ${JSON.stringify(dynamicPastData, null, 2)}
 ※AIへの絶対指示：
 1. まず「全自動強奪：最新前走生データ」から今回のレースの隊列（ペース）を完璧に予測してください。
 2. 予測した展開と「システム自動提供②」を照らし合わせてください。
-3. 最後にオッズを見て期待値を見抜き、買い方ルールに従って10点か16点かを判断して予想を出力してください。
+3. 最後にオッズを見て期待値を見抜き、買い方ルールに従って10点か16点かを判断し、指定予算(${budget}円)の資金配分を含めて予想を出力してください。
       `;
 
       const chatCompletion = await groq.chat.completions.create({
@@ -140,7 +141,7 @@ ${JSON.stringify(dynamicPastData, null, 2)}
       const aiAnswer = chatCompletion.choices[0]?.message?.content || "回答が空でした。";
       
       setResponse(aiAnswer);
-      setLastInput({ text: input, url: urlInput });
+      setLastInput({ text: input, url: urlInput, budget: budget });
       setLastResponse(aiAnswer);
 
     } catch (error) {
@@ -161,7 +162,18 @@ ${JSON.stringify(dynamicPastData, null, 2)}
           全自動スクレイピング ＆ 期待値AI
         </p>
 
-        {/* 📡 新規追加：URL入力欄 */}
+        {/* 💰 新規追加：予算入力欄 */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', background: '#fffafb', borderRadius: '16px', border: '2px solid #ffe4ec', padding: '5px 15px' }}>
+          <span style={{ fontSize: '14px', fontWeight: 'bold', marginRight: '10px' }}>💰 予算(円):</span>
+          <input 
+            type="number"
+            value={budget} 
+            onChange={(e) => setBudget(e.target.value)} 
+            style={{ flex: 1, padding: '10px', border: 'none', outline: 'none', background: 'transparent', fontSize: '16px', color: '#5c4b51' }}
+            placeholder="10000"
+          />
+        </div>
+
         <input 
           type="text"
           value={urlInput} 

@@ -82,8 +82,8 @@ async function startScraping() {
 
     const jsonString = JSON.stringify(finalMegaData, null, 2);
     
-    // 📁 `src` フォルダの中に保存するように指定（これ大事！）
-    const savePath = `./src/${fileName.trim()}`;
+  // 📁 `./src/` を消して、直接ファイル名で保存するように変更！
+const savePath = `./${fileName.trim()}`;
     fs.writeFileSync(savePath, jsonString);
     
     console.log(`🎉 成功！！！ ${savePath} にメガデータを保存しました！`);
