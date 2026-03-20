@@ -3,7 +3,7 @@ import Groq from 'groq-sdk';
 import './App.css';
 import pedigreeData from './pedigree_data.json';
 import tokyoMegaData from './tokyo_turf_1400_mega.json'; 
-import hanshin3000MegaData from './hanshin_turf_3000_mega.json'; // 👈 コメントアウト解除！
+import hanshin3000MegaData from './hanshin_turf_3000_mega.json'; 
 
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY,
@@ -11,13 +11,13 @@ const groq = new Groq({
 });
 
 function App() {
-  const [input, setInput] = useState(''); // 出馬表・オッズ用
-  const [urlInput, setUrlInput] = useState(''); // 📡 netkeiba過去走URL用
-  const [budget, setBudget] = useState('10000'); // 💰 【追加】予算用（初期値1万）
+  const [input, setInput] = useState(''); 
+  const [urlInput, setUrlInput] = useState(''); 
+  const [unitPrice, setUnitPrice] = useState('100'); // 💰 【変更】1点あたりの金額（初期値100円）
   const [response, setResponse] = useState('');
-  const [loadingText, setLoadingText] = useState(''); // 進行状況テキスト
+  const [loadingText, setLoadingText] = useState(''); 
 
-  const [lastInput, setLastInput] = useState({ text: '', url: '', budget: '' });
+  const [lastInput, setLastInput] = useState({ text: '', url: '', unitPrice: '' });
   const [lastResponse, setLastResponse] = useState('');
 
   const extractCourseInfo = (text) => {
@@ -36,8 +36,7 @@ function App() {
       return;
     }
 
-    // キャッシュ機能
-    if (input === lastInput.text && urlInput === lastInput.url && budget === lastInput.budget && lastResponse !== '') {
+    if (input === lastInput.text && urlInput === lastInput.url && unitPrice === lastInput.unitPrice && lastResponse !== '') {
       setResponse(lastResponse);
       return; 
     }
@@ -66,7 +65,6 @@ function App() {
       const detectedCourse = extractCourseInfo(input);
       let biasDataText = "";
 
-      // 💡 【追加】阪神芝3000mの判定ロジック！
       if (detectedCourse === "東京芝1400m") {
         biasDataText = `【🔥 システム自動提供②：${detectedCourse} 完全バイアスデータ】\n${JSON.stringify(tokyoMegaData, null, 2)}`;
       } else if (detectedCourse === "阪神芝3000m") {
@@ -77,28 +75,26 @@ function App() {
         biasDataText = `【🔥 システム自動提供②：コースバイアス（手動判定）】\nコース不明。出馬表から推測してください。`;
       }
 
+      // 💡 AIに渡すための「10点用」と「16点用」の計算済み予算！
+      const budget10 = parseInt(unitPrice) * 10;
+      const budget16 = parseInt(unitPrice) * 16;
+
       const systemInstruction = `
 あなたは中央競馬（JRA）専門のプロ予想AI「keiba nox」です。
-提供されたデータ（出馬表、オッズ、血統、各種バイアスデータ）を元に、オッズの歪み（期待値）をえぐり取るスタイルで出力してください。
+以下の【絶対遵守ルール】と【出力フォーマット】を、1文字の狂いもなく厳守してください。
 
-✅ 印の絶対ルール
-・◎：1頭のみ。
-・〇：1頭のみ。
-・▲：2頭。
-・△：基本2〜3頭。
-・「⭐」は使用禁止。
+✅ 【絶対遵守ルール】
+1. 独自の挨拶、絵文字（🐴や👑など）、前置きは【一切禁止】です。いきなり【1. コース概要】から出力してください。
+2. 資金配分は【必ず100円単位】です。50円や10円は絶対に禁止です。
+3. 今回のユーザーの指定は「1点あたりベース ${unitPrice} 円」です。
+4. 【最重要】あなたが「10点」を選択した場合は合計金額が【ぴったり ${budget10} 円】、「16点」を選択した場合は合計金額が【ぴったり ${budget16} 円】になるように割り振ってください。（期待値に応じて強弱をつけても良いですが、合計金額は必ず合わせること）
 
-✅ 買い方パターンと発動ルール
-1.【通常予想（10点）】単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-○,◎-▲1,◎-▲2 / 三連複:◎-○-▲1,◎-○-▲2 / 三連単:◎→○→▲1,◎→○→▲2
-2.【荒れ予想（16点）】単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-△1,◎-△2,◎-△3 / 三連複:◎-○-▲1,◎-○-▲2,◎-○-△1,◎-○-△2,◎-○-△3 / 三連単:◎→○→▲1,◎→○→△1,◎→○→△2,◎→○→△3
-
-✅ 資金配分ルールの絶対厳守事項（JRA仕様）
-・日本の馬券は「100円単位」です。50円や10円などの端数は【絶対に】出さないでください。
-・予算が1000円で10点買いの場合、必然的に全買い目が100円ずつになります。
-・指定された予算（${budget}円）と、選択した点数（10点 or 16点）に基づき、合計がぴったり予算になるように100円単位で割り振ってください。
+✅ 買い方パターン
+・10点の場合：単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-○,◎-▲1,◎-▲2 / 三連複:◎-○-▲1,◎-○-▲2 / 三連単:◎→○→▲1,◎→○→▲2
+・16点の場合：単勝:◎ / 馬連:◎-○ / 馬単:◎→○ / ワイド:◎-△1,◎-△2,◎-△3 / 三連複:◎-○-▲1,◎-○-▲2,◎-○-△1,◎-○-△2,◎-○-△3 / 三連単:◎→○→▲1,◎→○→△1,◎→○→△2,◎→○→△3
 
 ✅ 【絶対厳守】出力フォーマット
-以下のテンプレートを【一言一句そのまま】使用して出力してください。独自の絵文字や装飾は一切禁止です。
+（以下の枠組みをそのまま使用し、各項目を埋めてください）
 
 【1. コース概要】
 ・競馬場名：
@@ -110,17 +106,18 @@ function App() {
 〇：
 ▲：
 △：
-※選択理由：（〇〇のため、〇〇予想の〇〇点を選択）
+※選択理由：（なぜ10点 or 16点を選択したか簡潔に）
 
-【3. 資金配分（予算${budget}円）】
-・単勝（〇〇）：〇〇円
-（以下、選択した点数分の買い目を100円単位でリストアップ。合計${budget}円になること）
+【3. 資金配分】
+・合計予算：〇〇円（10点なら${budget10}円、16点なら${budget16}円を記載）
+・単勝（〇〇）：〇〇00円
+（※以下、100円単位で買い目と金額をリスト化。合計金額を必ず一致させること）
 
 【4. オッズと期待値】
-（解説）
+（印を打った理由とオッズの歪みについて解説）
 
 【5. 展開予想】
-（解説）
+（全自動強奪データをもとにした隊列やペースの推測）
       `;
 
       const combinedPrompt = `
@@ -135,41 +132,8 @@ ${biasDataText}
 【🐎 URLから全自動強奪：全出走馬の最新前走生データ（展開予想用）】
 ${JSON.stringify(dynamicPastData, null, 2)}
 
-※AIへの絶対指示：
-1. 「出馬表データ」から、競馬場名、距離、頭数を正確に読み取ってください。
-2. 「全自動強奪データ」から展開を予想し、「システム自動提供②」のコースバイアスと照らし合わせてください。
-3. オッズの歪みを見抜き、必ず指定された出力フォーマット（【1. コース概要】〜【5. 展開予想】）の通りに、100円単位の完璧な資金配分を出力してください。
-      `;【本日の出馬表・オッズデータ】
-${input}
-
-【システム自動提供①：血統データ】
-${JSON.stringify(pedigreeData, null, 2)}
-
-${biasDataText}
-
-【🐎 URLから全自動強奪：全出走馬の最新前走生データ（展開予想用）】
-${JSON.stringify(dynamicPastData, null, 2)}
-
-※AIへの絶対指示：
-1. 「出馬表データ」から、競馬場名、距離、頭数を正確に読み取ってください。
-2. 「全自動強奪データ」から展開を予想し、「システム自動提供②」のコースバイアスと照らし合わせてください。
-3. オッズの歪みを見抜き、指定のフォーマット（【1. コース概要】〜【5. 展開予想】）に従って、100円単位の完璧な資金配分を出力してください。
-      `;
-【本日の出馬表・オッズデータ】
-${input}
-
-【システム自動提供①：血統データ】
-${JSON.stringify(pedigreeData, null, 2)}
-
-${biasDataText}
-
-【🐎 URLから全自動強奪：全出走馬の最新前走生データ（展開予想用）】
-${JSON.stringify(dynamicPastData, null, 2)}
-
-※AIへの絶対指示：
-1. まず「全自動強奪：最新前走生データ」から今回のレースの隊列（ペース）を完璧に予測してください。
-2. 予測した展開と「システム自動提供②」を照らし合わせてください。
-3. 最後にオッズを見て期待値を見抜き、買い方ルールに従って10点か16点かを判断し、指定予算(${budget}円)の資金配分を含めて予想を出力してください。
+※AIへの最終絶対指示：
+いかなる理由があっても、指定された【出力フォーマット】以外の文字や記号から書き始めないでください。必ず【1. コース概要】から出力を開始し、予算合計を指示通りに合わせてください。
       `;
 
       const chatCompletion = await groq.chat.completions.create({
@@ -185,7 +149,7 @@ ${JSON.stringify(dynamicPastData, null, 2)}
       const aiAnswer = chatCompletion.choices[0]?.message?.content || "回答が空でした。";
       
       setResponse(aiAnswer);
-      setLastInput({ text: input, url: urlInput, budget: budget });
+      setLastInput({ text: input, url: urlInput, unitPrice: unitPrice });
       setLastResponse(aiAnswer);
 
     } catch (error) {
@@ -206,16 +170,22 @@ ${JSON.stringify(dynamicPastData, null, 2)}
           全自動スクレイピング ＆ 期待値AI
         </p>
 
-        {/* 💰 新規追加：予算入力欄 */}
+        {/* 💰 新規追加：プルダウン式の予算入力欄 */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', background: '#fffafb', borderRadius: '16px', border: '2px solid #ffe4ec', padding: '5px 15px' }}>
-          <span style={{ fontSize: '15px', fontWeight: 'bold', marginRight: '5px', whiteSpace: 'nowrap' }}>💰 予算(円):</span>
-          <input 
-            type="number"
-            value={budget} 
-            onChange={(e) => setBudget(e.target.value)} 
-            style={{ flex: 1, padding: '10px', border: 'none', outline: 'none', background: 'transparent', fontSize: '16px', color: '#5c4b51' }}
-            placeholder="10000"
-          />
+          <span style={{ fontSize: '15px', fontWeight: 'bold', marginRight: '10px', whiteSpace: 'nowrap' }}>💰 1点あたりの金額:</span>
+          <select 
+            value={unitPrice} 
+            onChange={(e) => setUnitPrice(e.target.value)} 
+            style={{ flex: 1, padding: '10px', border: 'none', outline: 'none', background: 'transparent', fontSize: '16px', color: '#5c4b51', cursor: 'pointer', appearance: 'none' }}
+          >
+            <option value="100">100円 (総額1000〜1600円)</option>
+            <option value="200">200円 (総額2000〜3200円)</option>
+            <option value="300">300円 (総額3000〜4800円)</option>
+            <option value="500">500円 (総額5000〜8000円)</option>
+            <option value="1000">1000円 (総額1万〜1.6万円)</option>
+            <option value="2000">2000円 (総額2万〜3.2万円)</option>
+            <option value="5000">5000円 (総額5万〜8万円)</option>
+          </select>
         </div>
 
         <input 
