@@ -152,7 +152,7 @@ ${JSON.stringify(dynamicPastData, null, 2)}
   };
 
   return (
-    <div style={{ padding: '40px 20px', minHeight: '100vh', backgroundColor: '#fdf3f6', fontFamily: '"Nunito", sans-serif', color: '#5c4b51', boxSizing: 'border-box' }}>
+    <div style={{ padding: '20px 15px', minHeight: '100vh', backgroundColor: '#fdf3f6', fontFamily: '"Nunito", sans-serif', color: '#5c4b51', boxSizing: 'border-box' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', background: '#ffffff', borderRadius: '24px', padding: '30px', boxShadow: '0 10px 25px rgba(255, 182, 193, 0.2)' }}>
         
         <h2 style={{ textAlign: 'center', color: '#ff8fb3', fontSize: '28px', marginBottom: '10px', letterSpacing: '2px' }}>
@@ -164,7 +164,7 @@ ${JSON.stringify(dynamicPastData, null, 2)}
 
         {/* 💰 新規追加：予算入力欄 */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', background: '#fffafb', borderRadius: '16px', border: '2px solid #ffe4ec', padding: '5px 15px' }}>
-          <span style={{ fontSize: '14px', fontWeight: 'bold', marginRight: '10px' }}>💰 予算(円):</span>
+          <span style={{ fontSize: '15px', fontWeight: 'bold', marginRight: '5px', whiteSpace: 'nowrap' }}>💰 予算(円):</span>
           <input 
             type="number"
             value={budget} 
